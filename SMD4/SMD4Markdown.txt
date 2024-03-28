@@ -1,0 +1,138 @@
+목차
+=
+- Bluetooth
+  - 정의
+  - 예제
+
+- RGB LED
+
+<br>
+<br>
+
+Bluetooth
+=
+정의
+-
+ESP32는 이와 같은 블루투스 통신을 지원하는데,   
+해당 예제에서는 블루투스 클래식 방식으로 스마트폰과 통신해 볼 것이다.  
+ 
+<br>
+<br>
+
+예제
+-
+예제를 실행시키기 위한 코드는 다음과 같다.   
+```
+#include "BluetoothSerial.h"
+
+const char *pin = "1234";
+
+String device_name = "ESP32-BT-JUSTICE"; 
+// 기기 이름, 자율적으로 설정 가능
+
+BluetoothSerial SerialBT;
+
+
+void setup() {
+
+  Serial.begin(115200); 
+  // Serial.begin(전송 속도); 
+  SerialBT.begin("ESP32-BT-JUSTICE"); 
+  // SerialBT.begin(앞서 작성한 기기 이름)
+
+}
+
+void loop() {
+
+  if (Serial.available()) {
+    SerialBT.write(Serial.read());
+
+  }
+
+  if (SerialBT.available()) {
+    Serial.write(SerialBT.read());
+  }
+
+  delay(20);
+}
+```
+<br>
+
+코드를 실행하고 스마트폰의 블루투스 설정에 들어가면   
+ESP32 기기가 추가된 것을 볼 수 있는데, 이를 다음과 같이 등록시켜주면 된다.   
+![1711602445170_1](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/398a4b9d-a183-4a8b-9744-1de22c7a6676)
+![1711602449809_2](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/b2b94a95-a193-441e-8f66-2bc8768be6d5)
+![1711602453341_3](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/2bf41692-f8ba-41d1-ac9c-dca1b8fba161)   
+
+<br>
+
+이후 Serial Bluetooth terminal 앱을 설치하는데,   
+해당 앱은 스마트폰의 통신 송수신을 돕는다.
+![Screenshot_20240328_131833_Google Play Store](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/def2148e-76a3-4513-85ff-46b9da4e67c0)   
+
+<br>
+
+앱을 설치한 뒤, 다음과 같은 설정이 필요하다.   
+![1711604392027](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/8af6b208-7e86-4c1c-b380-1f7800f88300)   
+
+<br>
+
+이에 대한 실행 결과는 아래와 같다.   
+![스크린샷 2024-03-28 132206_s1](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/d3b6b78d-c585-4210-9b29-a8453ec40407)
+![1711604951796_r1](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/47a41219-c5d6-43a0-b5fa-bd0551694f6b)   
+![1711604951871_s2](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/f57d42ba-1141-45a9-9eb4-a6f3041ba9d7)
+![스크린샷 2024-03-28 132352_r2](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/4c477bfe-227d-4031-859c-f6f3c75c4565)   
+
+<br>
+<br>
+
+RGB LED
+=
+RGB LED 예제는 ESP32에서    
+RGB LED 모듈의 색상을 변경하는 활동이다.   
+
+<br>
+
+![export202403281526134696](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/4dd0fe4a-7ff6-4801-8883-27c0b0aa6374)
+![스크린샷 2024-03-28 152127](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/46f816a6-9fe7-47f7-b55c-47bf3505cc2a)   
+예제를 위한 준비물 및 회로 연결은 이러하고,   
+작성해야 할 실행 코드는 다음과 같다.   
+
+<br>
+
+```
+#define RED_PIN 4
+#define GREEN_PIN 15
+#define BLUE_PIN 2
+
+void setup() {
+
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(BLUE_PIN, OUTPUT);
+
+  // HIGH, LED 꺼짐
+  digitalWrite(RED_PIN, HIGH);
+  digitalWrite(GREEN_PIN, HIGH);
+  digitalWrite(BLUE_PIN, HIGH);
+
+}
+
+void loop() {
+
+  // 빨강(255, 0, 0)
+  analogWrite(RED_PIN, 0);
+  analogWrite(GREEN_PIN, 255);
+  analogWrite(BLUE_PIN, 255);
+  delay(1000);
+
+  // 0 - 색상 켜짐
+  // 255 - 색상 꺼짐
+  
+}
+```
+이에 대한 실행 결과는 아래와 같다.
+
+<br>
+
+![Picsart_24-03-28_16-14-25-261](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/ad2a01a8-ecf8-49f7-87d8-8a38486bfa3b)
