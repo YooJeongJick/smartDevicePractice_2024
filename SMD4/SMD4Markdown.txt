@@ -5,6 +5,10 @@
   - 예제
 
 - RGB LED
+  - 예제
+  - 응용
+
+- Bluetooth + RGB LED
 
 <br>
 <br>
@@ -13,6 +17,25 @@ Bluetooth
 =
 정의
 -
+블루투스 통신은 **무선 통신 기술**의 한 종류로,   
+짧은 거리 내에 전자 기기들의 통신을 돕는다.   
+또한, 이는 크게 <U>클래식 블루투스와 BLE로 나뉜다.</U>   
+
+<br>
+
+
+**BLE**는 클래식 블루투스에 비해 저전력으로   
+낮은 전송속도와 짧은 연결 범위를 가지고 있다.   
+반면, 상대적으로 고전력을 소비하는 **클래식 블루투스**는   
+높은 전송속도와 긴 연결 범위를 가지고 있다.   
+
+<br>
+
+![Bluetooth_Technology_Overview_Graphic](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/3bb7f56b-a2f2-475e-938a-4c7778057cda)   
+출처 - <https://www.bluetooth.com/ko-kr/learn-about-bluetooth/tech-overview/>   
+
+<br>
+
 ESP32는 이와 같은 블루투스 통신을 지원하는데,   
 해당 예제에서는 블루투스 클래식 방식으로 스마트폰과 통신해 볼 것이다.  
  
@@ -66,14 +89,29 @@ ESP32 기기가 추가된 것을 볼 수 있는데, 이를 다음과 같이 등�
 
 <br>
 
-이후 Serial Bluetooth terminal 앱을 설치하는데,   
-해당 앱은 스마트폰의 통신 송수신을 돕는다.
+이후 Serial Bluetooth terminal 앱을 설치하는데,      
+해당 앱은 스마트폰의 통신 송수신을 돕는다.   
 ![Screenshot_20240328_131833_Google Play Store](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/def2148e-76a3-4513-85ff-46b9da4e67c0)   
 
 <br>
 
 앱을 설치한 뒤, 다음과 같은 설정이 필요하다.   
-![1711604392027](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/8af6b208-7e86-4c1c-b380-1f7800f88300)   
+![Picsart_24-03-28_14-39-10-025](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/e53cb6e5-a010-4644-90b4-c52fb53ef4f0)   
+
+<br>
+
+예제 실행 시, 스마트폰으로 문자를 송신하기 위해선   
+컴퓨터에 Serial Monitor 창을 추가시켜야 한다.   
+창을 추가시키는 방법은 다음과 같다.   
+![스크린샷 2024-03-31 095638](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/59a6841c-0880-4a28-bac2-6700434c5911)   
+
+
+<br>
+
+또한 원활한 통수신을 위해선 전송 속도를 맞춰야 하는데,   
+앞선 코드에서 전송 속도를 115200으로 설정했으니 이에 맞추면 된다.   
+전송 속도를 설정하는 방법은 다음과 같다.   
+![스크린샷 2024-03-31 095659](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/b4a6d14e-6141-40d3-bf1b-31fea0ef6b86)   
 
 <br>
 
@@ -88,13 +126,20 @@ ESP32 기기가 추가된 것을 볼 수 있는데, 이를 다음과 같이 등�
 
 RGB LED
 =
+예제
+-
 RGB LED 예제는 ESP32에서    
 RGB LED 모듈의 색상을 변경하는 활동이다.   
 
 <br>
 
 ![export202403281526134696](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/4dd0fe4a-7ff6-4801-8883-27c0b0aa6374)
-![스크린샷 2024-03-28 152127](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/46f816a6-9fe7-47f7-b55c-47bf3505cc2a)   
+![스크린샷 2024-03-28 152127](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/46f816a6-9fe7-47f7-b55c-47bf3505cc2a)
+> **RGB**란 빛의 삼원색인 빨간색(Red), 녹색(Green), 파란색(Blue)을 의미한다.   
+따라서, RGB 방식이란 **해당 삼원색을 통해 색을 표현하는 방식이다.**   
+RGB는 기본적으로 0~255사이의 수치를 가지며   
+삼원색이 모두 최고치 일시 흰색, 최저치 일시 검은색이 표현된다.   
+   
 예제를 위한 준비물 및 회로 연결은 이러하고,   
 작성해야 할 실행 코드는 다음과 같다.   
 
@@ -131,8 +176,198 @@ void loop() {
   
 }
 ```
-이에 대한 실행 결과는 아래와 같다.
+> LED 모듈은 크게 애노드 타입과 캐소드 타입 두 가지로 나뉜다.   
+**애노드 타입** RGB LED 모듈은 LOW 신호를 줘야 동작하는데   
+즉, 색상 핀을 0으로 설정하면 색상이 켜지고, 255로 설정하면 색상이 꺼진다.   
+**캐소드 타입** RGB LED 모듈은 이와 반대로 HIGH 신호를 줘야 동작한다.      
+
+따라서 코드 구현 전 자신의 LED 모듈 타입을 확인해야 하는데,   
+해당 예제에선 <U>애노드 타입</U> LED 모듈로 진행을 했다.
+   
+<br>
+
+이에 대한 실행 결과는 아래와 같다.   
+![Picsart_24-03-28_16-14-25-261](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/ad2a01a8-ecf8-49f7-87d8-8a38486bfa3b)   
+
+<br>
+<br>
+
+응용
+-
+위와 같은 예제는 2차원 배열을 활용하여   
+다양한 색상을 표현하도록 응용할 수 있다.   
+해당 응용에서는 무지개를 표현하고자 했는데,   
+실행 코드는 다음과 같다.   
+```
+#define RED_PIN 4
+#define GREEN_PIN 15
+#define BLUE_PIN 2
+int color[7][3] = {
+  {0, 255, 255}, // 빨
+  {0, 100, 255}, // 주
+  {0, 0, 255}, // 노
+  {255, 0, 255}, // 초
+  {255, 0, 0}, // 파
+  {255, 255, 50}, // 남
+  {150, 255, 0} // 보
+};
+
+void setup() {
+
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(BLUE_PIN, OUTPUT);
+
+  // HIGH, LED 꺼짐
+  digitalWrite(RED_PIN, HIGH);
+  digitalWrite(GREEN_PIN, HIGH);
+  digitalWrite(BLUE_PIN, HIGH);
+
+}
+
+void loop() {
+
+  for (int i = 0; i < 7; i++)
+  {
+    analogWrite(RED_PIN, color[i][0]);
+    analogWrite(GREEN_PIN, color[i][1]);
+    analogWrite(BLUE_PIN, color[i][2]);
+    delay(1000);
+  }
+  
+}
+```
 
 <br>
 
-![Picsart_24-03-28_16-14-25-261](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/ad2a01a8-ecf8-49f7-87d8-8a38486bfa3b)
+이에 대한 실행 결과는 아래와 같다.   
+![20240331_094524_1](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/23af31be-96a2-432b-a0b9-c2e3d85cc0c9)   
+
+<br>
+<br>
+
+Bluetooth + RGB LED
+=   
+앞서 배운 모든 내용을 종합하면,   
+BLE 통신을 이용해 RGB LED 모듈을 제어할 수 있다.   
+
+<br>
+
+예제를 실행시키기 위한 코드는 다음과 같다.
+```
+//라이브러리를 가져옵니다.
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+
+//서비스와 특성에 대한 UUID를 정의합니다.
+#define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define RGB_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define NOTYFY_CHARACTERISTIC_UUID "d501d731-f0f9-4121-a7f6-2c0f959f1583"
+
+//RGB LED에 사용될 핀 번호를 정의합니다
+#define RED_PIN   4
+#define GREEN_PIN 15
+#define BLUE_PIN  2
+
+//BLE 관련 객체를 선언합니다.
+BLEServer *pServer; //BLE 서버 객체
+BLEService *pService; // BLE 서비스 객체
+BLECharacteristic *pRGBCharacteristic = NULL; //BLE 특성 객체
+BLECharacteristic* pCharacteristic = NULL; //BLE 특성 객체
+
+//RGB 값을 저장할 변수들을 초기화합니다.
+int redValue = 0;
+int greenValue = 0;
+int blueValue = 0;
+
+//BLE 특성에 대한 콜백 클래스를 정의합니다.
+class MyCallbacks : public BLECharacteristicCallbacks {
+  //특성의 값을 읽어와 RGB 값을 파싱하고 LED를 제어합니다.
+  void onWrite(BLECharacteristic *pCharacteristic) {
+    String value = pCharacteristic->getValue().c_str(); //특성의 값을 문자열로 읽어옵니다.
+
+    // 값이 유효한 경우에만 처리
+    if (value.length() > 0) {
+      // RGB 값을 파싱하여 각각의 변수에 저장
+      int delimiterPos1 = value.indexOf(',');
+      int delimiterPos2 = value.lastIndexOf(',');
+
+      if (delimiterPos1 != -1 && delimiterPos2 != -1 \
+             && delimiterPos2 < value.length() - 1) {
+        redValue = value.substring(0, delimiterPos1).toInt();
+        greenValue = value.substring(delimiterPos1 + 1, delimiterPos2).toInt();
+        blueValue = value.substring(delimiterPos2 + 1).toInt();
+
+        // RGB 값을 LED의 밝기로 변환하여 제어합니다.
+        analogWrite(RED_PIN, 255 - redValue);
+        analogWrite(GREEN_PIN, 255 - greenValue);
+        analogWrite(BLUE_PIN, 255 - blueValue);
+      }
+    }
+  }
+};
+
+void setup() {
+  // BLE 초기화하고 이름을 "RGB LED Control"로 설정합니다
+  BLEDevice::init("RGB LED Control");
+  pServer = BLEDevice::createServer();
+  pService = pServer->createService(SERVICE_UUID);
+  
+  // RGB 특성 생성 및 설정
+  pRGBCharacteristic = pService->createCharacteristic(
+    RGB_CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_WRITE
+  );  
+  pRGBCharacteristic->setCallbacks(new MyCallbacks());
+
+  // Notify/Indicate 특성 생성 및 설정
+  pCharacteristic = pService->createCharacteristic(
+                      NOTYFY_CHARACTERISTIC_UUID,
+                      BLECharacteristic::PROPERTY_NOTIFY |
+                      BLECharacteristic::PROPERTY_INDICATE
+                    );
+    // Create a BLE Descriptor
+  pCharacteristic->addDescriptor(new BLE2902());
+
+  // 서비스를 서버에 추가
+  pService->start();
+
+  // BLE 광고 시작
+  BLEAdvertising *pAdvertising = pServer->getAdvertising();
+  pAdvertising->start();
+
+    // 모든 핀을 HIGH로 설정하여 LED를 꺼진 상태로 초기화합니다.
+  digitalWrite(RED_PIN, HIGH);
+  digitalWrite(GREEN_PIN, HIGH);
+  digitalWrite(BLUE_PIN, HIGH);
+}
+
+void loop() {
+  // RGB 값을 16진수 형태로 변환하여 Notify
+  char hexValue[8]; 
+  sprintf(hexValue, "#%02X%02X%02X", redValue, greenValue, blueValue);
+  //Notify 특성의 값을 hexValue로 설정합니다.
+  pCharacteristic->setValue(hexValue); 
+  pCharacteristic->notify(); //Notify를 통해 값을 전달합니다.
+
+  delay(100);  // 알림 간격을 조절할 수 있습니다.
+}
+```
+
+<br>
+
+예재 실행 결과를 확인하기 위해선   
+nRF Connect for Mobile 앱을 설치해야 한다.  
+![Screenshot_20240402_183633_Google Play Store](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/9b09e51e-ca9b-4bf3-bc51-5bcbe8493009)    
+
+<br>
+
+앱을 통한 실행 결과 확인은 다음과 같다.   
+![Picsart_24-04-02_21-29-41-142](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/3d3ef03d-148d-4f0b-aa40-f21f9f476dd3)   
+![Picsart_24-04-02_21-32-21-225](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/e6b3bc58-5c7c-4f39-a753-2e62a6c9d9aa)   
+![20240402_212319_1](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/f120a9d1-8db9-4c9b-bef1-f82ebda15225)
+
+
+
