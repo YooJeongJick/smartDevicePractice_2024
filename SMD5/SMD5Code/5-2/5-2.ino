@@ -26,7 +26,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   <style>
     html { font-family: Helvetica; display: inline-block; 
             margin: 0px auto; text-align: center; }
-    .button { background-color: #4CAF50; border: none; 
+    .button { background-color: #4CAF50; border: none; index_html[]
               color: white; padding: 16px 40px; text-decoration: none; 
               font-size: 30px; margin: 2px; cursor: pointer; }
     .button2 { background-color: #555555; }

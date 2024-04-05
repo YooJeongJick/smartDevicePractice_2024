@@ -3,11 +3,17 @@
 
 const char* ssid = "WEBSERVER";             // 연결할 Wi-Fi의 SSID를 입력합니다.
 const char* password = "20240403";     // Wi-Fi의 비밀번호를 입력합니다.
+const char index_html[] PROGMEM = R"rawliteral(
+<p>Hello from ESP32!</p> <!--기본-->
+<p style="font-family: serif">Hello from ESP32!</p> <!--폰트 변경-->
+<p style="color: blue">Hello from ESP32!</p> <!--색 변경-->
+<p style="font-size: 200%">Hello from ESP32!</p> <!--크기 변경-->
+)rawliteral";
 
 WebServer server(80);                          // 포트 번호 80을 사용하여 WebServer 객체를 생성합니다.
 
 void handleRoot() {
-  server.send(200, "text/plain", "Hello from ESP32!");   // "/" 경로에 대한 요청을 처리하는 핸들러 함수입니다.
+  server.send(200, "text/html", index_html);   
 }
 
 void setup() {

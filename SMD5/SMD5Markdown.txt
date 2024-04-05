@@ -1,0 +1,270 @@
+목차
+=
+- 정의
+  - 인터넷과 웹
+  - HTML
+  - 서버와 클라이언트
+  - HTTP
+
+- 예제
+  - 기본
+  - 폰트 변경
+  - 색 변경
+  - 크기 변경
+
+<br>
+<br>
+
+정의
+=
+이번 회차의 예제에서는 ESP32를 통해 웹 서버에 접근하는 활동이기 때문에,   
+웹에 대한 기본적인 이해가 필수적이다.   
+
+<br>
+
+인터넷과 웹
+-
+흔히 인터넷과 웹의 개념을 많이 혼동하여 사용하는데   
+엄밀히 따지면, 인터넷에 웹이 포함된 것이다.   
+이는 인터넷과 웹의 단어 정의를 통해 확인할 수 있는데   
+<U>전세계적 범위에서 네트워크를 통해 데이터를 주고받는 것이</U> **인터넷**이고   
+<U>HTML 양식으로 데이터를 주고 받는 것이</U> **웹**이다.   
+
+<br>
+ 
+HTML
+-
+그렇다면, 앞서 언급된 HTML이란 무엇일까?   
+**HTML**을 간단하게 말하자면 <U>웹을 위한 언어라고 정의할 수 있다.</U>   
+
+HTML은 (Hypertext Markup Language)의 약자이다.   
+(HT)하이퍼 텍스트란 문서와 문서가 링크로 연결되도록    
+구조화 되어있는 텍스트를 의미하는데,   
+이처럼 링크로 연결된 거대한 정보망이 웹이다.   
+
+(ML)마크업 랭귀지란 웹과 사람이 이해할 수 있도록    
+작성하는 언어 형식을 의미한다.   
+
+이와 같은 마크업 랭귀지에선 태그가 사용되는데,   
+여기서 태그란 옷에 붙는 태그와 역할이 동일하다.   
+옷에 붙는 태그가 옷을 설명하는 정보라면,   
+마크업 랭귀지의 태그도 동일하게      
+데이터의 상태를 설명하는 정보인 셈이다.   
+
+위 설명에 대한 예시로 마크업 랭귀지가 사용 된 다음 코드는    
+```
+해당 강의는 <strong>스마트디바이스실습</strong> 입니다.
+```
+아래와 같이 나타나는데,   
+![스크린샷 2024-04-05 124256](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/d4226bbe-e125-41c1-af58-e4fd29049723)   
+
+strong 태그가 콘텐츠가 강조된 상태를 설명함을 알 수 있다.   
+앞선 예시에서 보이듯, 태그는 <시작태그>콘텐츠<끝태그> 형식으로 구성된다.   
+
+<br>
+
+클라이언트와 서버
+-
+이러한 HTML 양식으로 데이터를 주고받는       
+<U>웹은 **클라이언트와 서버** 체계 내에서 동작한다</U>.   
+
+웹브라우저가 설치된 클라이언트 컴퓨터를 통해   
+서버 컴퓨터에 웹페이지를 **요청**한다.   
+이 때 서버 컴퓨터에는 웹서버 소프트웨어가 설치되어 있는데,   
+앞선 요청을 받아 데이터를 읽고 이를 클라이언트에게 전달한다.   
+이 과정을 **응답**이라고 한다.   
+<U>즉, 클라이언트는 요청하고 서버는 응답한다.</U>   
+
+<br>
+
+HTTP
+-
+이와 같이 클라이언트와 서버가 서로 정보를 주고받을 때   
+적용되는 통신규약이 바로 **HTTP** 이다.   
+
+<br>
+<br>
+
+예제
+=
+ESP32는 인터넷 연결을 통해    
+웹 서버를 실행하여 웹 페이지를 제공할 수 있다.   
+해당 예제에서는 이를 활용해 메시지를 반환해 볼 것이다.   
+
+<br>
+
+예제를 실행시키기 위한 코드는 다음과 같다.   
+```
+#include <WiFi.h>        // WiFi 라이브러리를 포함합니다.
+#include <WebServer.h>   // WebServer 라이브러리를 포함합니다.
+
+const char* ssid = "WEBSERVER";             // 연결할 Wi-Fi의 SSID를 입력합니다.
+const char* password = "20240403";     // Wi-Fi의 비밀번호를 입력합니다.
+
+WebServer server(80);                          // 포트 번호 80을 사용하여 WebServer 객체를 생성합니다.
+
+void handleRoot() {
+  server.send(200, "text/plain", "Hello from ESP32!");   // "/" 경로에 대한 요청을 처리하는 핸들러 함수입니다.
+}
+
+void setup() {
+  Serial.begin(115200);                         // 시리얼 통신을 초기화합니다.
+
+  WiFi.begin(ssid, password);                    // Wi-Fi에 연결합니다.
+  Serial.println("Connected to WiFi");           
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+
+  server.on("/", handleRoot);                    // "/" 경로에 대한 요청을 handleRoot() 함수로 처리합니다.
+
+  while (WiFi.status() != WL_CONNECTED) {        // Wi-Fi 연결이 완료될 때까지 대기합니다.
+      delay(500);
+      Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected.");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());                // Wi-Fi의 로컬 IP 주소를 출력합니다.
+
+  server.begin();                                // 서버를 시작합니다.
+}
+
+void loop() {
+  server.handleClient();                         // 클라이언트의 요청을 처리합니다.
+}
+```
+
+<br>
+
+ESP32는 인터넷에 기반해 웹 서버를 공급함으로 인터넷 설정이 필수적이다.    
+앞선 예제에서 언급된 인터넷 설정은 다음과 같다.   
+```
+const char* ssid = "WEBSERVER";             // 연결할 Wi-Fi의 SSID를 입력합니다.
+const char* password = "20240403";     // Wi-Fi의 비밀번호를 입력합니다.
+```
+여기서 SSID는 서비스 세트 식별자로 (Service Set Identifier)의 약자이다.   
+즉, Wife SSID는 와이파이의 이름을 의미한다.   
+
+<br>
+
+해당 예제에서는 모바일 핫스팟을 통해 인터넷을 설정하였다.   
+![Screenshot_20240404_111406_Settings](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/78abf637-6c39-4e1f-b03b-b12497d2c496)   
+
+<br>
+
+예제 실행 시, ESP32에 할당된 IP 주소를 확인하기 위해선   
+컴퓨터에 Serial Monitor 창을 추가시켜야 한다.   
+창을 추가시키는 방법은 다음과 같다.   
+![스크린샷 2024-04-04 110914](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/998103d5-d5db-4ef1-a292-cb2b4d644f63)   
+
+<br>
+
+이에 대한 실행 결과는 위와 같은데,    
+제공받은 IP를 브라우저 주소 입력창에 작성하면 된다.    
+해당 예제에서는 모바일 크롬을 사용하였다.   
+![스크린샷 2024-04-04 113203](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/995ac606-c80f-466b-9d28-fe8d4abdeaa2)   
+![Screenshot_20240404_111455_Chrome](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/8943f315-706a-4cdc-aad1-568bd1e6134a)   
+
+<br>
+
+예제의 메시지는 HTML 문법을 활용하여   
+속성을 변경시킬 수 있다.   
+```
+#include <WiFi.h>        // WiFi 라이브러리를 포함합니다.
+#include <WebServer.h>   // WebServer 라이브러리를 포함합니다.
+
+const char* ssid = "WEBSERVER";             // 연결할 Wi-Fi의 SSID를 입력합니다.
+const char* password = "20240403";     // Wi-Fi의 비밀번호를 입력합니다.
+const char index_html[] PROGMEM = R"rawliteral(
+<p>Hello from ESP32!</p> <!--기본-->
+<p style="font-family: serif">Hello from ESP32!</p> <!--폰트 변경-->
+<p style="color: blue">Hello from ESP32!</p> <!--색 변경-->
+<p style="font-size: 200%">Hello from ESP32!</p> <!--크기 변경-->
+)rawliteral";
+
+WebServer server(80);                          // 포트 번호 80을 사용하여 WebServer 객체를 생성합니다.
+
+void handleRoot() {
+  server.send(200, "text/html", index_html);   
+}
+
+void setup() {
+  Serial.begin(115200);                         // 시리얼 통신을 초기화합니다.
+
+  WiFi.begin(ssid, password);                    // Wi-Fi에 연결합니다.
+  Serial.println("Connected to WiFi");           
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+
+  server.on("/", handleRoot);                    // "/" 경로에 대한 요청을 handleRoot() 함수로 처리합니다.
+
+  while (WiFi.status() != WL_CONNECTED) {        // Wi-Fi 연결이 완료될 때까지 대기합니다.
+      delay(500);
+      Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected.");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());                // Wi-Fi의 로컬 IP 주소를 출력합니다.
+
+  server.begin();                                // 서버를 시작합니다.
+}
+
+void loop() {
+  server.handleClient();                         // 클라이언트의 요청을 처리합니다.
+}
+```
+![Screenshot_20240404_153949_Chrome](https://github.com/YooJeongJick/smartDevicePractice_2024/assets/145202997/f62b66a0-3439-45cb-bf4d-93c641ddb160)   
+
+<br>
+
+속성 변경에 따른 handleRoot() 함수는 다음과 같다.   
+
+<br>
+
+기본
+-   
+```
+void handleRoot() {
+  server.send(200, "text/html", "<p>Hello from ESP32!</p>");   
+}
+```
+
+<br>
+
+폰트 변경
+-
+```
+void handleRoot() {
+  server.send(200, "text/html", "<p style="font-family: serif">Hello from ESP32!</p>");   
+}
+```
+
+<br>
+
+색 변경   
+-
+```
+void handleRoot() {
+  server.send(200, "text/html", "<p style="color: blue">Hello from ESP32!</p>");   
+}
+```
+
+<br>
+
+크기 변경
+-
+```
+void handleRoot() {
+  server.send(200, "text/html", "<p style="font-size: 200%">Hello from ESP32!</p>");   
+}
+```
+
+
+
